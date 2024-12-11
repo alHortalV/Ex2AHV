@@ -6,7 +6,7 @@ interface Config {
 }
 
 export interface ICountry {
-    getCountries(route : string) : Promise<CountryRequest[] | HttpError>;
+    getContinents(route : string) : Promise<CountryRequest[] | HttpError>;
 }
 
 export abstract class Http implements ICountry {
@@ -16,5 +16,5 @@ export abstract class Http implements ICountry {
         this.url_base = url_base;
     }
 
-    abstract getCountries(route: string) : Promise<CountryRequest[] | HttpError> ;
+    abstract getContinents(route: string) : Promise<CountryRequest[] | HttpError> ;
 }

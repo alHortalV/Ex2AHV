@@ -5,7 +5,7 @@ import { HttpError } from './HttpError';
 
 
 export class HttpAxios extends Http {
-    async getCountries(route: string): Promise<CountryRequest[] | HttpError> {
+    async getContinents(route: string): Promise<CountryRequest[] | HttpError> {
         try {
             const {data} = await axios.get<CountryRequest[]>(`${this.url_base}region/${route}`);
             return data;
