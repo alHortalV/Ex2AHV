@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {Continent} from '../request/CountryRequest';
+import {Region} from '../request/CountryRequest';
 
 type RootStackParamList = {
   Continents: undefined;
@@ -20,7 +20,7 @@ type ContinentsScreenProps = NativeStackScreenProps<
 >;
 
 const ContinentsScreen: React.FC<ContinentsScreenProps> = ({navigation}) => {
-  const continents = Object.values(Continent);
+  const continents = Object.values(Region);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
