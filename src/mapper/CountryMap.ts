@@ -6,7 +6,9 @@ interface CountryDetails {
   languages: string;
   cca3: string;
   latlng: number[];
-  flag: string;
+  flag: {
+    png: string;
+  };
 }
 
 export const CountryMapper = (
@@ -22,6 +24,6 @@ export const CountryMapper = (
       : 'N/A',
     cca3: countryRequest.cca3,
     latlng: countryRequest.latlng || [0, 0],
-    flag: countryRequest.flags.png,
+    flag: countryRequest.flags,
   };
 };

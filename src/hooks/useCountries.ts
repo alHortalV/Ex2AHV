@@ -25,7 +25,7 @@ export const useCountries = (continent: string) => {
             population: item.population,
             capital: item.capital,
             languages: item.languages,
-            flags: item.flags.png,
+            flags: item.flags,
           }),
         );
 
