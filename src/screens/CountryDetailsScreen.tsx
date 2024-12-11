@@ -63,10 +63,10 @@ const CountryDetailsScreen: React.FC<CountryDetailsScreenProps> = ({
   const mapUrl =
     country.latlng && country.latlng.length === 2
       ? `https://www.openstreetmap.org/export/embed.html?bbox=${
-          country.latlng[1] - 5
-        },${country.latlng[0] - 5},${country.latlng[1] + 5},${
-          country.latlng[0] + 5
-        }&zoom=15&layer=mapnik`
+          country.latlng[1] - 2
+        },${country.latlng[0] - 2},${country.latlng[1] + 2},${
+          country.latlng[0] + 2
+        }`
       : null;
 
   return (
