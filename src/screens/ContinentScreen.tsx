@@ -1,13 +1,7 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {Region} from '../request/CountryRequest';
+import {Region} from '../types/CountryRequest';
 
 type RootStackParamList = {
   Continents: undefined;
@@ -22,26 +16,31 @@ type ContinentsScreenProps = NativeStackScreenProps<
 const ContinentsScreen: React.FC<ContinentsScreenProps> = ({navigation}) => {
   const continents = Object.values(Region);
 
+  // Renderiza cada elemento de la lista de continentes
+  const renderContinentItem = ({item}: {item: string}) => (
+    <TouchableOpacity
+      style={styles.button}
+      onPress={() => navigation.navigate('Countries', {continent: item})}>
+      <Text style={styles.buttonText}>{item}</Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>Select a Continent</Text>
-      <View style={styles.buttonContainer}>
-        {continents.map(continent => (
-          <TouchableOpacity
-            key={continent}
-            style={styles.button}
-            onPress={() => navigation.navigate('Countries', {continent})}>
-            <Text style={styles.buttonText}>{continent}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </ScrollView>
+      <FlatList
+        data={continents}
+        keyExtractor={item => item}
+        renderItem={renderContinentItem}
+        contentContainerStyle={styles.buttonContainer}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
