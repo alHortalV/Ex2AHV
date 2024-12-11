@@ -9,8 +9,9 @@ import {
   Image,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useCountries} from '../hooks/useContinent';
+import {useCountries} from '../hooks/useCountries';
 import {CountryDetails} from '../types/CountryDetails';
+import NavigationButton from '../components/NavigationButton';
 
 type RootStackParamList = {
   Continents: undefined;
@@ -29,36 +30,38 @@ const CountriesScreen: React.FC<CountriesScreenProps> = ({
 }) => {
   const {continent} = route.params;
   const {countries, loading, error} = useCountries(continent);
+  const renderCountryItem = ({item}: {item: CountryDetails}) => {
+    const languages = item.languages
+      ? Object.values(item.languages).join(', ')
+      : 'N/A';
+    const capital = item.capital ? item.capital : 'N/A';
 
-  const renderCountryItem = ({item}: {item: CountryDetails}) => (
-    <TouchableOpacity
-      style={styles.countryItem}
-      onPress={() => navigation.navigate('CountryDetails', {country: item})}>
-      <Image source={{uri: item.flag}} style={styles.flag} />
-      <View style={styles.countryInfo}>
-        <Text style={styles.countryName}>{item.name.common}</Text>
-        <Text style={styles.countryCapital}>
-          Capital: {item.capital ?? 'N/A'}
-        </Text>
-        <Text style={styles.countryCode}>{item.cca3}</Text>
-      </View>
-    </TouchableOpacity>
-  );
+    return (
+      <TouchableOpacity
+        style={styles.countryItem}
+        onPress={() => navigation.navigate('CountryDetails', {country: item})}>
+        <Image source={{uri: item.flags.png}} style={styles.flag} />
+        <View style={styles.countryInfo}>
+          <Text style={styles.countryName}>{item.name.common}</Text>
+          <Text style={styles.countryCapital}>Capital: {capital}</Text>
+          <Text style={styles.countryLanguage}>Language(s): {languages}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Countries in {continent}</Text>
-
       {loading && <ActivityIndicator size="large" color="#007AFF" />}
-
       {error && <Text style={styles.error}>Error: {error}</Text>}
-
       <FlatList
         data={countries}
         keyExtractor={item => item.cca3}
         renderItem={renderCountryItem}
         contentContainerStyle={styles.listContainer}
       />
+      <NavigationButton onPress={() => navigation.navigate('Continents')} />
     </View>
   );
 };
@@ -96,6 +99,13 @@ const styles = StyleSheet.create({
     marginRight: 16,
     borderRadius: 4,
   },
+  flagPlaceholder: {
+    width: 50,
+    height: 30,
+    marginRight: 16,
+    backgroundColor: 'gray',
+    borderRadius: 4,
+  },
   countryInfo: {
     flex: 1,
   },
@@ -107,9 +117,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'gray',
   },
-  countryCode: {
+  countryLanguage: {
     fontSize: 14,
     color: 'gray',
+  },
+  buttonContainer: {
+    padding: 16,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    marginTop: 16,
   },
 });
 
