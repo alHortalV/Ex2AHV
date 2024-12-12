@@ -1,7 +1,6 @@
-// Este es un ejemplo de cómo podrías estructurar tu hook useCountries
 import {useState, useEffect} from 'react';
-import {CountryDetails} from '../types/CountryDetails';
-import {CountryRequest} from '../types/CountryRequest';
+import {CountryDetails} from '../config/types/CountryDetails';
+import {CountryRequest} from '../config/res/CountryRequest';
 
 export const useCountries = (continent: string) => {
   const [countries, setCountries] = useState<CountryDetails[]>([]);

@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
-import {HttpAxios} from '../mapper/http/HttpAxios';
-import {HttpError} from '../mapper/http/HttpError';
-import {CountryDetails} from '../types/CountryDetails';
+import { HttpAxios } from '../http/HttpAxios';
+import { HttpError } from '../http/HttpError';
+import {CountryDetails} from '../config/types/CountryDetails';
 
 export const useCountryByName = (countryName: string) => {
   const [country, setCountry] = useState<CountryDetails | null>(null);

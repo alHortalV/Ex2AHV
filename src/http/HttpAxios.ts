@@ -1,8 +1,8 @@
 import axios from 'axios';
-import {CountryRequest} from '../../types/CountryRequest';
+import { CountryRequest } from '../config/res/CountryRequest';
 import {Http} from './Http';
 import {HttpError} from './HttpError';
-import {CountryDetails} from '../../types/CountryDetails';
+import { CountryDetails } from '../config/types/CountryDetails';
 
 export class HttpAxios extends Http {
   async getContinents(route: string): Promise<CountryRequest[] | HttpError> {

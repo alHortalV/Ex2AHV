@@ -1,4 +1,4 @@
-import {CountryRequest} from '../types/CountryRequest';
+import { CountryRequest } from "../res/CountryRequest";
 
 interface CountryDetails {
   name: {common: string};

@@ -1,5 +1,5 @@
-import {CountryRequest} from '../../types/CountryRequest';
-import {CountryDetails} from '../../types/CountryDetails';
+import { CountryRequest } from '../config/res/CountryRequest';
+import { CountryDetails } from '../config/types/CountryDetails';
 import {HttpError} from './HttpError';
 
 interface Config {

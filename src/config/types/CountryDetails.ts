@@ -1,4 +1,4 @@
-import {Currency, Demonyms} from './CountryRequest';
+import {Currency, Demonyms} from '../res/CountryRequest';
 
 export interface CountryDetails {
   name: {
