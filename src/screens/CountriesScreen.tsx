@@ -1,22 +1,22 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
   ActivityIndicator,
-  TouchableOpacity,
-  Image,
 } from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useCountries} from '../hooks/useCountries';
-import {CountryDetails} from '../types/CountryDetails';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useCountries } from '../hooks/useCountries';
+import { CountryDetails } from '../config/types/CountryDetails';
+import CountryComponent from '../components/CountryComponent';
 import NavigationButton from '../components/NavigationButton';
+import { DarkRWhiteModeContext } from '../theme/DarkRWhiteMode';
 
 type RootStackParamList = {
   Continents: undefined;
-  Countries: {continent: string};
-  CountryDetails: {country: CountryDetails};
+  Countries: { continent: string };
+  CountryDetails: { country: CountryDetails };
 };
 
 type CountriesScreenProps = NativeStackScreenProps<
@@ -28,40 +28,56 @@ const CountriesScreen: React.FC<CountriesScreenProps> = ({
   route,
   navigation,
 }) => {
-  const {continent} = route.params;
-  const {countries, loading, error} = useCountries(continent);
-  const renderCountryItem = ({item}: {item: CountryDetails}) => {
-    const languages = item.languages
-      ? Object.values(item.languages).join(', ')
-      : 'N/A';
-    const capital = item.capital ? item.capital : 'N/A';
+  const { continent } = route.params;
+  const { countries, loading, error } = useCountries(continent);
+  const { theme } = useContext(DarkRWhiteModeContext);
 
-    return (
-      <TouchableOpacity
-        style={styles.countryItem}
-        onPress={() => navigation.navigate('CountryDetails', {country: item})}>
-        <Image source={{uri: item.flags.png}} style={styles.flag} />
-        <View style={styles.countryInfo}>
-          <Text style={styles.countryName}>{item.name.common}</Text>
-          <Text style={styles.countryCapital}>Capital: {capital}</Text>
-          <Text style={styles.countryLanguage}>Language(s): {languages}</Text>
-        </View>
-      </TouchableOpacity>
-    );
+  const handlePress = (country: CountryDetails) => {
+    navigation.navigate('CountryDetails', { country });
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Countries in {continent}</Text>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: theme === 'light' ? '#f5f5f5' : '#333333',
+        },
+      ]}
+    >
+      <Text
+        style={[
+          styles.title,
+          { color: theme === 'light' ? '#000000' : '#FFFFFF' },
+        ]}
+      >
+        Countries in {continent}
+      </Text>
       {loading && <ActivityIndicator size="large" color="#007AFF" />}
-      {error && <Text style={styles.error}>Error: {error}</Text>}
+      {error && (
+        <Text style={[styles.error, { color: theme === 'light' ? 'red' : '#FF0000' }]}>
+          Error: {error}
+        </Text>
+      )}
       <FlatList
         data={countries}
         keyExtractor={item => item.cca3}
-        renderItem={renderCountryItem}
-        contentContainerStyle={styles.listContainer}
+        renderItem={({ item }) => (
+          <CountryComponent
+            country={item}
+            onPress={handlePress}
+            theme={theme}
+          />
+        )}
+        contentContainerStyle={[
+          styles.listContainer,
+          { backgroundColor: theme === 'light' ? '#FFFFFF' : '#555555' },
+        ]}
       />
-      <NavigationButton onPress={() => navigation.navigate('Continents')} />
+      <NavigationButton
+        onPress={() => navigation.navigate('Continents')}
+        theme={theme} // También puedes pasar el tema aquí
+      />
     </View>
   );
 };
@@ -69,7 +85,6 @@ const CountriesScreen: React.FC<CountriesScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   listContainer: {
     padding: 16,
@@ -81,51 +96,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   error: {
-    color: 'red',
     textAlign: 'center',
     marginVertical: 16,
-  },
-  countryItem: {
-    backgroundColor: 'white',
-    padding: 16,
-    marginBottom: 8,
-    borderRadius: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  flag: {
-    width: 50,
-    height: 30,
-    marginRight: 16,
-    borderRadius: 4,
-  },
-  flagPlaceholder: {
-    width: 50,
-    height: 30,
-    marginRight: 16,
-    backgroundColor: 'gray',
-    borderRadius: 4,
-  },
-  countryInfo: {
-    flex: 1,
-  },
-  countryName: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  countryCapital: {
-    fontSize: 14,
-    color: 'gray',
-  },
-  countryLanguage: {
-    fontSize: 14,
-    color: 'gray',
-  },
-  buttonContainer: {
-    padding: 16,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    marginTop: 16,
   },
 });
 
