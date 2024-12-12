@@ -1,53 +1,102 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { CountryDetails } from '../config/types/CountryDetails';
+import {View, Text, StyleSheet} from 'react-native';
+import {CountryDetails} from '../config/types/CountryDetails';
 
 interface CountryDetailsInfoProps {
-  country: CountryDetails;
-  theme: 'light' | 'dark';
+  country: CountryDetails; // Detalles del país.
+  theme: 'light' | 'dark'; // Tema del componente (claro u oscuro).
 }
 
-const CountryDetailsComponent: React.FC<CountryDetailsInfoProps> = ({ country, theme }) => {
+const CountryDetailsComponent: React.FC<CountryDetailsInfoProps> = ({
+  country,
+  theme,
+}) => {
   const currencies = country.currencies
     ? Object.values(country.currencies)
-        .map(curr => `${curr.name} (${curr.symbol})`)
+        .map(curr => `${curr.name} (${curr.symbol})`) // Devuelve las monedas y sus símbolos.
         .join(', ')
     : 'N/A';
 
   const languages = country.languages
-    ? Object.values(country.languages).join(', ')
+    ? Object.values(country.languages).join(', ') // Devuelve las lenguas del país.
     : 'N/A';
 
   return (
-    <View style={[styles.detailContainer, theme === 'light' ? styles.lightBackground : styles.darkBackground]}>
-      <Text style={[styles.detailText, theme === 'light' ? styles.lightText : styles.darkText]}>
+    <View
+      style={[
+        styles.detailContainer,
+        theme === 'light' ? styles.lightBackground : styles.darkBackground, // Aplica el fondo según el tema.
+      ]}>
+      {/* Muestra la región */}
+      <Text
+        style={[
+          styles.detailText,
+          theme === 'light' ? styles.lightText : styles.darkText, // Aplica estilo según el tema.
+        ]}>
         Region: {country.region}
       </Text>
-      <Text style={[styles.detailText, theme === 'light' ? styles.lightText : styles.darkText]}>
+      {/* Muestra la subregión */}
+      <Text
+        style={[
+          styles.detailText,
+          theme === 'light' ? styles.lightText : styles.darkText,
+        ]}>
         Subregion: {country.subregion}
       </Text>
-      <Text style={[styles.detailText, theme === 'light' ? styles.lightText : styles.darkText]}>
+      {/* Muestra la capital */}
+      <Text
+        style={[
+          styles.detailText,
+          theme === 'light' ? styles.lightText : styles.darkText,
+        ]}>
         Capital: {country.capital?.[0] || 'N/A'}
       </Text>
-      <Text style={[styles.detailText, theme === 'light' ? styles.lightText : styles.darkText]}>
+      {/* Muestra la población */}
+      <Text
+        style={[
+          styles.detailText,
+          theme === 'light' ? styles.lightText : styles.darkText,
+        ]}>
         Population: {country.population.toLocaleString()}
       </Text>
-      <Text style={[styles.detailText, theme === 'light' ? styles.lightText : styles.darkText]}>
+      {/* Muestra el área */}
+      <Text
+        style={[
+          styles.detailText,
+          theme === 'light' ? styles.lightText : styles.darkText,
+        ]}>
         Area: {country.area.toLocaleString()} km²
       </Text>
-      <Text style={[styles.detailText, theme === 'light' ? styles.lightText : styles.darkText]}>
+      {/* Muestra las lenguas */}
+      <Text
+        style={[
+          styles.detailText,
+          theme === 'light' ? styles.lightText : styles.darkText,
+        ]}>
         Languages: {languages}
       </Text>
-      <Text style={[styles.detailText, theme === 'light' ? styles.lightText : styles.darkText]}>
+      {/* Muestra las monedas */}
+      <Text
+        style={[
+          styles.detailText,
+          theme === 'light' ? styles.lightText : styles.darkText,
+        ]}>
         Currencies: {currencies}
       </Text>
-      <Text style={[styles.detailText, theme === 'light' ? styles.lightText : styles.darkText]}>
-        Coordinates: {country.latlng?.[0].toFixed(2)}°N, {country.latlng?.[1].toFixed(2)}°E
+      {/* Muestra las coordenadas */}
+      <Text
+        style={[
+          styles.detailText,
+          theme === 'light' ? styles.lightText : styles.darkText,
+        ]}>
+        Coordinates: {country.latlng?.[0].toFixed(2)},{' '}
+        {country.latlng?.[1].toFixed(2)}
       </Text>
     </View>
   );
 };
 
+// Estilos para el componente
 const styles = StyleSheet.create({
   detailContainer: {
     padding: 16,
@@ -55,20 +104,22 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   lightBackground: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#4CAF50',
+    borderColor: '#000000',
   },
   darkBackground: {
-    backgroundColor: '#333333',
+    backgroundColor: '#00796B',
+    borderColor: '#FFFFFF',
   },
   detailText: {
     fontSize: 16,
     marginBottom: 8,
   },
   lightText: {
-    color: '#333333',
+    color: '#E8F5E9',
   },
   darkText: {
-    color: '#f0f0f0',
+    color: '#E8F5E9',
   },
 });
 

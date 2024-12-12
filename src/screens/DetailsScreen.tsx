@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  SafeAreaView,
   useWindowDimensions,
 } from 'react-native';
 import {WebView} from 'react-native-webview';
@@ -14,6 +15,7 @@ import {CountryDetails} from '../config/types/CountryDetails';
 import NavigationButton from '../components/NavigationButton';
 import CountryDetailsInfo from '../components/CountryDetailsComponent';
 import {DarkRWhiteModeContext} from '../theme/DarkRWhiteMode';
+import DarkRWhiteComponent from '../components/DarkRWhiteComponent';
 
 type RootStackParamList = {
   Continents: undefined;
@@ -24,153 +26,120 @@ type RootStackParamList = {
 type CountryDetailsScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'CountryDetails'
->;
+>; // Definición de las props para la pantalla de detalles del país.
 
-const CountryDetailsScreen: React.FC<CountryDetailsScreenProps> = ({
+const DetailsScreen: React.FC<CountryDetailsScreenProps> = ({
   route,
   navigation,
 }) => {
-  const {country: initialCountry} = route.params;
+  const {country: initialCountry} = route.params; // Obtiene el país desde los parámetros de navegación.
   const {country, loading, error} = useCountryByName(
     initialCountry.name.common,
-  );
-  const {height} = useWindowDimensions();
-  const {theme} = useContext(DarkRWhiteModeContext); // Obtenemos el tema del contexto
+  ); // Llama al hook para obtener los detalles del país.
+  const {theme, toggleTheme} = useContext(DarkRWhiteModeContext); // Accede al contexto del tema.
+  const {height} = useWindowDimensions(); // Obtiene las dimensiones de la ventana para ajustar el tamaño del mapa.
 
   if (loading) {
+    // Muestra el cargando mientras se obtienen los detalles del país.
     return (
-      <View
+      <SafeAreaView
         style={[
           styles.container,
           {backgroundColor: theme === 'light' ? '#f5f5f5' : '#333333'},
         ]}>
         <ActivityIndicator size="large" color="#007AFF" />
-      </View>
+      </SafeAreaView>
     );
   }
 
   if (error || !country) {
+    // Muestra un mensaje de error si no se pueden obtener los detalles del país.
     return (
-      <View
+      <SafeAreaView
         style={[
           styles.container,
           {backgroundColor: theme === 'light' ? '#f5f5f5' : '#333333'},
         ]}>
         <Text
           style={[
-            styles.title,
+            styles.header,
             {color: theme === 'light' ? '#000000' : '#FFFFFF'},
           ]}>
           Error Loading Country
         </Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
-  const currencies = country.currencies
-    ? Object.values(country.currencies)
-        .map(curr => `${curr.name} (${curr.symbol})`)
-        .join(', ')
-    : 'N/A';
-
-  const languages = country.languages
-    ? Object.values(country.languages).join(', ')
-    : 'N/A';
-
+  // Genera la URL del mapa si las coordenadas están disponibles.
   const mapUrl =
     country.latlng && country.latlng.length === 2
-      ? `https://www.openstreetmap.org/export/embed.html?bbox=${
-          country.latlng[1]
-        },${country.latlng[0]},${country.latlng[1]},${
-          country.latlng[0] 
-        }&map=5`
+      ? `https://www.openstreetmap.org/#map=5/${country.latlng[0]}/${country.latlng[1]}`
       : null;
 
   return (
-    <ScrollView
+    <SafeAreaView
       style={[
         styles.container,
-        {backgroundColor: theme === 'light' ? '#f5f5f5' : '#333333'},
+        {backgroundColor: theme === 'light' ? '#E8F5E9' : '#263238'},
       ]}>
-      <Text
-        style={[
-          styles.title,
-          {color: theme === 'light' ? '#000000' : '#FFFFFF'},
-        ]}>
-        Details
-      </Text>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          <Text
+            style={[
+              styles.header,
+              {color: theme === 'light' ? '#263238' : '#E8F5E9'},
+            ]}>
+            Details
+          </Text>
+          <DarkRWhiteComponent toggleTheme={toggleTheme} theme={theme} />{' '}
+        </View>
+        <View>
+          <CountryDetailsInfo country={country} theme={theme} />
 
-      <View
-        style={[
-          styles.detailContainer,
-          theme === 'light' ? styles.light : styles.dark,
-        ]}>
-        <CountryDetailsInfo country={country} theme={theme} />
-      </View>
+          <Text
+            style={[
+              styles.header,
+              {color: theme === 'light' ? '#263238' : '#E8F5E9'},
+            ]}>
+            Location
+          </Text>
 
-      <View
-        style={[
-          styles.mapContainer,
-          theme === 'light' ? styles.light : styles.dark,
-        ]}>
-        <Text
-          style={[
-            styles.mapTitle,
-            {color: theme === 'light' ? '#000000' : '#FFFFFF'},
-          ]}>
-          Location
-        </Text>
-        {mapUrl ? (
-          <WebView
-            source={{uri: mapUrl}}
-            style={[styles.map, {height: height * 0.3}]}
-            scalesPageToFit={true}
-          />
-        ) : (
-          <Text style={styles.noMapText}>No map coordinates available</Text>
-        )}
-      </View>
+          {mapUrl ? (
+            <WebView
+              source={{uri: mapUrl}}
+              style={[styles.map, {height: height * 0.4}]} // Ajusta la altura del mapa dependiendo de la pantalla.
+              scalesPageToFit={true} // Permite hacer zoom en el mapa.
+            />
+          ) : (
+            <Text style={styles.noMapText}>No map coordinates available</Text> // Mensaje si no hay coordenadas.
+          )}
+        </View>
 
-      <NavigationButton
-        onPress={() => navigation.navigate('Continents')}
-        theme={theme}
-      />
-    </ScrollView>
+        <NavigationButton
+          onPress={() => navigation.navigate('Continents')}
+          theme={theme}
+        />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
   },
-  title: {
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center',
   },
-  detailContainer: {
+  scrollContent: {
     padding: 16,
-    borderRadius: 8,
-    elevation: 3,
-  },
-  light: {
-    backgroundColor: '#ffffff',
-  },
-  dark: {
-    backgroundColor: '#555555',
-  },
-  mapContainer: {
-    marginTop: 16,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  mapTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    textAlign: 'center',
+    paddingBottom: 50,
   },
   map: {
     width: '100%',
@@ -182,4 +151,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CountryDetailsScreen;
+export default DetailsScreen;
