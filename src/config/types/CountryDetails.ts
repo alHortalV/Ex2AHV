@@ -1,5 +1,5 @@
-import {Currency, Demonyms} from '../res/CountryRequest';
-
+import {Currency} from '../res/CountryRequest';
+// Interfaz con los datos que necesarios de la API
 export interface CountryDetails {
   name: {
     common: string;
@@ -17,6 +17,5 @@ export interface CountryDetails {
   area: number;
   subregion: string;
   currencies: {[key: string]: Currency};
-  demonyms: Demonyms;
   latlng: number[];
 }
