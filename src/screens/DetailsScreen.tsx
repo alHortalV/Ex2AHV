@@ -26,21 +26,25 @@ type RootStackParamList = {
 type CountryDetailsScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'CountryDetails'
->; // Definición de las props para la pantalla de detalles del país.
+>;
 
 const DetailsScreen: React.FC<CountryDetailsScreenProps> = ({
   route,
   navigation,
 }) => {
-  const {country: initialCountry} = route.params; // Obtiene el país desde los parámetros de navegación.
+  // Obtiene el país desde los parámetros de navegación.
+  const {country: initialCountry} = route.params;
+
+  // Llama al hook para obtener los detalles del país
   const {country, loading, error} = useCountryByName(
     initialCountry.name.common,
-  ); // Llama al hook para obtener los detalles del país.
-  const {theme, toggleTheme} = useContext(DarkRWhiteModeContext); // Accede al contexto del tema.
-  const {height} = useWindowDimensions(); // Obtiene las dimensiones de la ventana para ajustar el tamaño del mapa.
+  );
 
+  const {theme, toggleTheme} = useContext(DarkRWhiteModeContext);
+  const {height} = useWindowDimensions();
+
+  // Muestra un indicador de carga mientras se obtienen los datos del país
   if (loading) {
-    // Muestra el cargando mientras se obtienen los detalles del país.
     return (
       <SafeAreaView
         style={[
@@ -52,8 +56,8 @@ const DetailsScreen: React.FC<CountryDetailsScreenProps> = ({
     );
   }
 
+  // Si hay un error o no se obtuvieron los datos, muestra un mensaje
   if (error || !country) {
-    // Muestra un mensaje de error si no se pueden obtener los detalles del país.
     return (
       <SafeAreaView
         style={[
@@ -71,7 +75,7 @@ const DetailsScreen: React.FC<CountryDetailsScreenProps> = ({
     );
   }
 
-  // Genera la URL del mapa si las coordenadas están disponibles.
+  // Genera la URL del mapa si las coordenadas están disponibles
   const mapUrl =
     country.latlng && country.latlng.length === 2
       ? `https://www.openstreetmap.org/#map=5/${country.latlng[0]}/${country.latlng[1]}`
@@ -84,6 +88,7 @@ const DetailsScreen: React.FC<CountryDetailsScreenProps> = ({
         {backgroundColor: theme === 'light' ? '#E8F5E9' : '#263238'},
       ]}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Cabecera de la pantalla */}
         <View style={styles.header}>
           <Text
             style={[
@@ -92,9 +97,10 @@ const DetailsScreen: React.FC<CountryDetailsScreenProps> = ({
             ]}>
             Details
           </Text>
-          <DarkRWhiteComponent toggleTheme={toggleTheme} theme={theme} />{' '}
+          <DarkRWhiteComponent toggleTheme={toggleTheme} theme={theme} />
         </View>
         <View>
+          {/* Información del país */}
           <CountryDetailsInfo country={country} theme={theme} />
 
           <Text
@@ -108,14 +114,15 @@ const DetailsScreen: React.FC<CountryDetailsScreenProps> = ({
           {mapUrl ? (
             <WebView
               source={{uri: mapUrl}}
-              style={[styles.map, {height: height * 0.4}]} // Ajusta la altura del mapa dependiendo de la pantalla.
-              scalesPageToFit={true} // Permite hacer zoom en el mapa.
+              style={[styles.map, {height: height * 0.4}]}
+              scalesPageToFit={true}
             />
           ) : (
-            <Text style={styles.noMapText}>No map coordinates available</Text> // Mensaje si no hay coordenadas.
+            <Text style={styles.noMapText}>No map coordinates available</Text>
           )}
         </View>
 
+        {/* Botón de navegación */}
         <NavigationButton
           onPress={() => navigation.navigate('Continents')}
           theme={theme}

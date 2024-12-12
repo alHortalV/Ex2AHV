@@ -16,8 +16,8 @@ import DarkRWhiteComponent from '../components/DarkRWhiteComponent';
 
 type RootStackParamList = {
   Continents: undefined;
-  Countries: {continent: string}; // Parámetro para la pantalla de países, que recibe un continente.
-  CountryDetails: {country: CountryDetails}; // Parámetro para la pantalla de detalles del país.
+  Countries: {continent: string}; // Parámetro que recibe el continente para la pantalla de países.
+  CountryDetails: {country: CountryDetails}; // Parámetro que recibe los detalles del país para la pantalla de detalles.
 };
 
 type CountriesScreenProps = NativeStackScreenProps<
@@ -33,6 +33,7 @@ const CountriesScreen: React.FC<CountriesScreenProps> = ({
   const {countries, loading, error} = useCountries(continent); // Llama al hook para obtener los países del continente.
   const {theme, toggleTheme} = useContext(DarkRWhiteModeContext); // Accede al contexto del tema.
 
+  // Función para manejar la navegación a la pantalla de detalles de un país.
   const handlePress = (country: CountryDetails) => {
     navigation.navigate('CountryDetails', {country}); // Navega a la pantalla de detalles del país.
   };
@@ -41,49 +42,56 @@ const CountriesScreen: React.FC<CountriesScreenProps> = ({
     <View
       style={[
         styles.container,
-        {backgroundColor: theme === 'light' ? '#E8F5E9' : '#263238'}, // Cambia el color de fondo según el tema.
+        {backgroundColor: theme === 'light' ? '#E8F5E9' : '#263238'},
       ]}>
       <View style={styles.header}>
         <Text
           style={[
             styles.title,
-            {color: theme === 'light' ? '#263238' : '#E8F5E9'}, // Cambia el color del texto según el tema.
+            {color: theme === 'light' ? '#263238' : '#E8F5E9'},
           ]}>
           Countries in {continent}
         </Text>
-        <DarkRWhiteComponent toggleTheme={toggleTheme} theme={theme} />{' '}
-        {/* Componente para cambiar el tema. */}
+        <DarkRWhiteComponent toggleTheme={toggleTheme} theme={theme} />
+        {/* Componente para cambiar el tema */}
       </View>
-      {loading && <ActivityIndicator size="large" color="#007AFF" />}{' '}
-      {/* Muestra un cargando mientras se obtienen los datos. */}
+
+      {loading && <ActivityIndicator size="large" color="#007AFF" />}
+      {/* Muestra un cargando mientras se obtienen los datos */}
+
       {error && (
         <Text
           style={[
             styles.error,
-            {color: theme === 'light' ? 'red' : '#FF0000'}, // Muestra el error con un color apropiado.
+            {color: theme === 'light' ? 'red' : '#FF0000'},
           ]}>
           Error: {error}
         </Text>
       )}
+      {/* Muestra un mensaje de error si no se pueden obtener los países */}
+
       <FlatList
         data={countries}
-        keyExtractor={item => item.cca3} // Utiliza el código de país como clave única.
+        keyExtractor={item => item.cca3}
         renderItem={({item}) => (
           <CountryComponent
             country={item}
-            onPress={handlePress} // Al presionar un país, navega a la pantalla de detalles.
+            onPress={handlePress}
             theme={theme}
           />
         )}
         contentContainerStyle={[
           styles.listContainer,
-          {backgroundColor: theme === 'light' ? '#E8F5E9' : '#263238'}, // Cambia el fondo de la lista según el tema.
+          {backgroundColor: theme === 'light' ? '#E8F5E9' : '#263238'},
         ]}
       />
+      {/* Muestra la lista de países usando FlatList */}
+
       <NavigationButton
-        onPress={() => navigation.navigate('Continents')} // Navega a la pantalla de continentes.
+        onPress={() => navigation.navigate('Continents')}
         theme={theme}
       />
+      {/* Botón de navegación a la pantalla de continentes */}
     </View>
   );
 };
